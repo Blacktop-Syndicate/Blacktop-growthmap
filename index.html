@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blacktop GrowthMap™</title>
+  <style>
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #000;
+      color: #fff;
+    }
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 100vh;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(34,211,238,.18), transparent 28%),
+        radial-gradient(circle at 80% 10%, rgba(16,185,129,.14), transparent 24%),
+        linear-gradient(to bottom, rgba(2,6,23,.4), #000);
+    }
+    .circuit {
+      position: absolute;
+      inset: 0;
+      opacity: .22;
+      background-image:
+        linear-gradient(90deg, rgba(103,232,249,.45) 1px, transparent 1px),
+        linear-gradient(rgba(103,232,249,.25) 1px, transparent 1px);
+      background-size: 90px 90px;
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+    }
+    .wrap {
+      position: relative;
+      z-index: 2;
+      width: min(1180px, calc(100% - 32px));
+      margin: auto;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .chip {
+      height: 48px;
+      width: 48px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(103,232,249,.45);
+      background: rgba(0,0,0,.7);
+      box-shadow: 0 0 35px rgba(34,211,238,.2);
+      font-size: 24px;
+    }
+    .brand-small {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .28em;
+      color: #a5f3fc;
+      text-transform: uppercase;
+    }
+    .brand-big {
+      font-size: 22px;
+      font-weight: 950;
+      line-height: 1.05;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 48px;
+      align-items: center;
+      padding: 76px 0 90px;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(103,232,249,.28);
+      background: rgba(103,232,249,.1);
+      color: #cffafe;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 22px;
+    }
+    h1 {
+      margin: 0;
+      font-size: clamp(46px, 8vw, 82px);
+      line-height: .95;
+      letter-spacing: -0.055em;
+      font-weight: 950;
+    }
+    .cyan { color: #a5f3fc; }
+    p {
+      color: #cbd5e1;
+      line-height: 1.75;
+      font-size: 18px;
+    }
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 30px;
+    }
+    button, .button {
+      border: none;
+      cursor: pointer;
+      border-radius: 18px;
+      padding: 17px 26px;
+      font-weight: 900;
+      font-size: 15px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .primary {
+      background: #67e8f9;
+      color: #000;
+    }
+    .secondary {
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+    }
+    .card {
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 32px;
+      background: rgba(0,0,0,.68);
+      box-shadow: 0 20px 80px rgba(0,0,0,.45);
+      backdrop-filter: blur(14px);
+    }
+    .card-pad { padding: 28px; }
+    .snapshot-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 15px;
+      margin-top: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.045);
+      border: 1px solid rgba(255,255,255,.08);
+      font-weight: 800;
+      color: #f8fafc;
+    }
+    .num {
+      height: 36px;
+      width: 36px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: rgba(103,232,249,.11);
+      color: #a5f3fc;
+      font-weight: 950;
+    }
+    section {
+      padding: 70px 0;
+    }
+    .cta {
+      border: 1px solid rgba(103,232,249,.22);
+      background: rgba(103,232,249,.055);
+      border-radius: 32px;
+      padding: 34px;
+      display: grid;
+      gap: 28px;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+    .grid-two {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 24px;
+    }
+    .rec {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.36);
+      margin-top: 12px;
+      color: #e2e8f0;
+      line-height: 1.55;
+    }
+    .report {
+      min-height: 280px;
+      white-space: pre-wrap;
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(0,0,0,.55);
+      border: 1px solid rgba(255,255,255,.1);
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-size: 14px;
+      overflow-x: auto;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .feature {
+      padding: 24px;
+      border-radius: 26px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.04);
+    }
+    footer {
+      color: #64748b;
+      text-align: center;
+      padding: 32px 16px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      overflow-y: auto;
+      background: rgba(0,0,0,.86);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+    }
+    .modal.active { display: block; }
+    .modal-inner {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+    }
+    .modal-top {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 14px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr .9fr;
+      gap: 24px;
+    }
+    .fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    label {
+      display: block;
+      color: #e2e8f0;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    input, select {
+      width: 100%;
+      margin-top: 8px;
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.6);
+      color: #fff;
+      outline: none;
+      font-size: 15px;
+    }
+    .score-ring {
+      margin: 20px auto;
+      height: 176px;
+      width: 176px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(#67e8f9 0%, rgba(255,255,255,.08) 0%);
+      position: relative;
+    }
+    .score-ring::after {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border-radius: inherit;
+      background: #000;
+    }
+    .score-text {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .score-number {
+      font-size: 52px;
+      font-weight: 950;
+    }
+    .mini-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .mini {
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(0,0,0,.4);
+      padding: 16px;
+    }
+    .mini span {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+    .mini strong {
+      display: block;
+      margin-top: 6px;
+      font-size: 24px;
+    }
+
+    @media (max-width: 860px) {
+      .hero-grid, .cta, .grid-two, .form-grid { grid-template-columns: 1fr; }
+      .features { grid-template-columns: 1fr; }
+      .fields { grid-template-columns: 1fr; }
+      header .primary { display: none; }
+      section { padding: 48px 0; }
+      .card-pad { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero">
+      <div class="circuit"></div>
+      <div class="wrap">
+        <header>
+          <div class="brand">
+            <div class="chip">▣</div>
+            <div>
+              <div class="brand-small">Blacktop Syndicate</div>
+              <div class="brand-big">GrowthMap™</div>
+            </div>
+          </div>
+          <button class="primary" onclick="openQuestionnaire()">Open Questionnaire →</button>
+        </header>
+
+        <div class="hero-grid">
+          <div>
+            <div class="pill">🧠 Powered by Blacktop AI</div>
+            <h1>Systems. Content. Growth.<span class="cyan"> Built for the road ahead.</span></h1>
+            <p>Get an instant AI-powered business audit with a custom GrowthMap for leads, content, ads, and revenue.</p>
+            <div class="buttons">
+              <button class="primary" onclick="openQuestionnaire()">Start Questionnaire →</button>
+              <a class="button secondary" href="#results">View GrowthMap</a>
+            </div>
+          </div>
+
+          <div class="card card-pad">
+            <div style="display:flex; gap:12px; align-items:center;">
+              <div style="font-size:28px;">🗺️</div>
+              <div>
+                <h2 style="margin:0;">GrowthMap Snapshot</h2>
+                <p style="margin:4px 0 0; font-size:14px;">Click the questionnaire to unlock your audit.</p>
+              </div>
+            </div>
+            <div class="snapshot-item"><div class="num">1</div> Business intake</div>
+            <div class="snapshot-item"><div class="num">2</div> AI scoring</div>
+            <div class="snapshot-item"><div class="num">3</div> Growth route</div>
+            <div class="snapshot-item"><div class="num">4</div> Copy-ready report</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <div class="cta">
+          <div>
+            <div class="pill">🧠 Powered by Blacktop AI</div>
+            <h2 style="font-size:42px; margin:0;">App Questionnaire</h2>
+            <p>The questionnaire stays closed until clicked. Open it, answer a few questions, and generate your GrowthMap report.</p>
+          </div>
+          <button class="primary" onclick="openQuestionnaire()">Open App Questionnaire →</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="results">
+      <div class="wrap grid-two">
+        <div class="card card-pad">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div style="font-size:28px;">📣</div>
+            <h2 style="margin:0;">Recommended Growth Route</h2>
+          </div>
+          <div id="recommendations">
+            <div class="rec">✅ Your recommendations will appear here after the questionnaire is completed.</div>
+          </div>
+          <div style="margin-top:24px; padding:20px; border-radius:20px; background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.1);">
+            <div style="font-size:12px; font-weight:900; letter-spacing:.2em; color:#a5f3fc;">SUGGESTED PACKAGE</div>
+            <div id="packageName" style="font-size:32px; font-weight:950; margin-top:8px;">Suggested Package</div>
+            <p style="font-size:15px;">Complete the questionnaire to update this package recommendation.</p>
+          </div>
+        </div>
+
+        <div class="card card-pad">
+          <div style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+            <div style="display:flex; gap:12px; align-items:center;">
+              <div style="font-size:28px;">📄</div>
+              <div>
+                <h2 style="margin:0;">Your AI GrowthMap Report</h2>
+                <p style="margin:4px 0 0; font-size:14px;">Copy and share the finished audit.</p>
+              </div>
+            </div>
+            <button class="secondary" onclick="copyReport()">Copy My GrowthMap</button>
+          </div>
+          <pre id="report" class="report">Your detailed GrowthMap report will appear here after you open and complete the questionnaire.</pre>
+        </div>
+      </div>
+    </section>
+
+    <section style="background:#020617; border-top:1px solid rgba(255,255,255,.1); border-bottom:1px solid rgba(255,255,255,.1);">
+      <div class="wrap">
+        <h2 style="font-size:42px; max-width:760px;">More than marketing. We build systems that scale.</h2>
+        <p style="max-width:760px;">Blacktop GrowthMap helps businesses see what is missing, what to fix first, and what growth route to take next.</p>
+        <div class="features">
+          <div class="feature"><h3>🤖 AI-Powered</h3><p>Smart audits that uncover missed growth opportunities fast.</p></div>
+          <div class="feature"><h3>📊 Data-Driven</h3><p>Scoring built around website, social, content, and ad readiness.</p></div>
+          <div class="feature"><h3>🎯 Results-Focused</h3><p>Built to create more calls, leads, appointments, and sales.</p></div>
+          <div class="feature"><h3>🛡️ Built To Win</h3><p>Road-tested strategy for real businesses that need traction.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <footer>© 2026 Blacktop Syndicate. Blacktop GrowthMap™. Powered by Blacktop AI.</footer>
+  </main>
+
+  <div id="questionnaireModal" class="modal">
+    <div class="modal-inner">
+      <div class="modal-top">
+        <button class="secondary" onclick="closeQuestionnaire()">✕ Close</button>
+      </div>
+
+      <div class="form-grid">
+        <div class="card card-pad">
+          <h2 style="margin-top:0;">Business Intake</h2>
+          <p>Answer these questions to generate the GrowthMap.</p>
+
+          <div class="fields">
+            <label>Business Name
+              <input id="businessName" placeholder="Example: Blacktop Diesel Co." />
+            </label>
+
+            <label>Industry
+              <select id="industry">
+                <option>Trucking / Logistics</option>
+                <option>Diesel Shop / Auto Repair</option>
+                <option>Restaurant / Bar</option>
+                <option>Tattoo Shop</option>
+                <option>Gym / Fitness</option>
+                <option>Construction / Contractor</option>
+                <option>Roofing / HVAC</option>
+                <option>Barbershop / Salon</option>
+                <option>Retail / Apparel</option>
+                <option>Sports / Entertainment</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label>Website
+              <input id="website" placeholder="https://yourwebsite.com" />
+            </label>
+
+            <label>Social Media Status
+              <select id="socialStatus">
+                <option>Posts consistently</option>
+                <option selected>Posts sometimes</option>
+                <option>Rarely posts</option>
+                <option>No real social presence</option>
+              </select>
+            </label>
+
+            <label>Uses Reels / Short Videos?
+              <select id="shortVideo">
+                <option selected>Yes</option>
+                <option>No</option>
+              </select>
+            </label>
+
+            <label>Runs Paid Ads?
+              <select id="paidAds">
+                <option selected>No</option>
+                <option>Yes</option>
+              </select>
+            </label>
+
+            <label>Main Goal
+              <select id="goal">
+                <option selected>More calls</option>
+                <option>More leads</option>
+                <option>More walk-in traffic</option>
+                <option>More booked appointments</option>
+                <option>More online sales</option>
+                <option>Brand awareness</option>
+              </select>
+            </label>
+
+            <label>Notes
+              <input id="notes" placeholder="Anything important we should know?" />
+            </label>
+          </div>
+
+          <div style="margin-top:24px; display:flex; justify-content:space-between; gap:16px; align-items:center; flex-wrap:wrap;">
+            <div style="color:#94a3b8; font-size:14px;">🔒 Your information is secure and never shared.</div>
+            <button class="primary" onclick="generateGrowthMap()">Generate GrowthMap →</button>
+          </div>
+        </div>
+
+        <div class="card card-pad">
+          <h2 style="margin-top:0;">Growth Preview</h2>
+          <p>Your score appears after generating.</p>
+          <div id="scoreRing" class="score-ring">
+            <div class="score-text">
+              <div id="scoreNumber" class="score-number">--</div>
+              <div style="color:#a5f3fc; font-weight:900;">/100</div>
+            </div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini"><span>Website</span><strong id="websiteScore">--/100</strong></div>
+            <div class="mini"><span>Social</span><strong id="socialScore">--/100</strong></div>
+            <div class="mini"><span>Content</span><strong id="contentScore">--/100</strong></div>
+            <div class="mini"><span>Ad Readiness</span><strong id="adScore">--/100</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let latestReport = "Your detailed GrowthMap report will appear here after you open and complete the questionnaire.";
+
+    function openQuestionnaire() {
+      document.getElementById("questionnaireModal").classList.add("active");
+    }
+
+    function closeQuestionnaire() {
+      document.getElementById("questionnaireModal").classList.remove("active");
+    }
+
+    function generateGrowthMap() {
+      const businessName = document.getElementById("businessName").value || "Business Name";
+      const industry = document.getElementById("industry").value;
+      const website = document.getElementById("website").value;
+      const socialStatus = document.getElementById("socialStatus").value;
+      const shortVideo = document.getElementById("shortVideo").value;
+      const paidAds = document.getElementById("paidAds").value;
+      const goal = document.getElementById("goal").value;
+
+      let score = 48;
+      if (website.trim()) score += 12;
+      if (socialStatus === "Posts consistently") score += 18;
+      if (socialStatus === "Posts sometimes") score += 10;
+      if (shortVideo === "Yes") score += 12;
+      if (paidAds === "Yes") score += 10;
+      score = Math.min(score, 96);
+
+      const websiteScore = website.trim() ? 82 : 55;
+      const socialScore = socialStatus === "Posts consistently" ? 88 : socialStatus === "Posts sometimes" ? 68 : 44;
+      const contentScore = shortVideo === "Yes" ? 84 : 52;
+      const adScore = paidAds === "Yes" ? 78 : 48;
+
+      const packageName = score >= 82 ? "Scale Route" : score >= 65 ? "Growth Route" : "Foundation Route";
+
+      const recs = [
+        `Build the next 30 days around ${goal.toLowerCase()} with one clear offer and one main call-to-action.`,
+        shortVideo === "Yes"
+          ? "Increase short-form video volume and repurpose each reel into Facebook, Instagram, and Google Business Profile posts."
+          : "Add weekly short-form videos so the business has stronger reach and retargeting content.",
+        paidAds === "Yes"
+          ? "Tighten paid ads around one offer, one landing page, and tracked call or lead conversion."
+          : "Start with a small local ad test after the website and social proof are cleaned up."
+      ];
+
+      document.getElementById("scoreRing").style.background = `conic-gradient(#67e8f9 ${score}%, rgba(255,255,255,.08) ${score}%)`;
+      document.getElementById("scoreNumber").textContent = score;
+      document.getElementById("websiteScore").textContent = websiteScore + "/100";
+      document.getElementById("socialScore").textContent = socialScore + "/100";
+      document.getElementById("contentScore").textContent = contentScore + "/100";
+      document.getElementById("adScore").textContent = adScore + "/100";
+
+      document.getElementById("recommendations").innerHTML = recs.map(r => `<div class="rec">✅ ${r}</div>`).join("");
+      document.getElementById("packageName").textContent = packageName;
+
+      latestReport =
+`BLACKTOP GROWTHMAP AUDIT
+
+Business: ${businessName}
+Industry: ${industry}
+Main Goal: ${goal}
+
+Growth Score: ${score}/100
+Suggested Route: ${packageName}
+
+Recommended Growth Route:
+- ${recs.join("\n- ")}
+
+Recommended Services:
+- Weekly Reels
+- Social Management
+- Local Ads
+- Google Business Profile Optimization
+- Monthly Reporting
+
+Built by Blacktop GrowthMap™. Powered by Blacktop AI.`;
+
+      document.getElementById("report").textContent = latestReport;
+      closeQuestionnaire();
+      setTimeout(() => document.getElementById("results").scrollIntoView({ behavior: "smooth" }), 100);
+    }
+
+    function copyReport() {
+      navigator.clipboard.writeText(latestReport).then(() => {
+        alert("GrowthMap copied.");
+      }).catch(() => {
+        alert("Copy failed. You can manually highlight and copy the report.");
+      });
+    }
+  </script>
+</body>
+</html>
